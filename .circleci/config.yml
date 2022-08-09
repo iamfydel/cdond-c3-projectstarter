@@ -62,9 +62,8 @@ commands:
           # Add when this will run
           when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow #id, store result in SUCCESS variable
-            SUCCESS = $(curl --insecure "https://kvdb.io/Lg2M3qovDKBxrsUbCkpF1A/migration_<<parameters.workflow_id>>")
-            if(( $SUCCESS == 1 ));
+            SUCCESS=$(curl --insecure "https://kvdb.io/Lg2M3qovDKBxrsUbCkpF1A/migration_<<parameters.workflow_id>>")
+            if (( $SUCCESS == 1 ));
             then
               cd ~/project/backend
               npm install
@@ -399,9 +398,9 @@ jobs:
               echo ${API_URL}
               if curl -s ${API_URL}/api/status | grep "ok"
               then
-                return 0
+                exit 0
               else
-                return 1
+                exit 1
               fi
       - run:
           name: Frontend smoke test.
@@ -411,9 +410,9 @@ jobs:
               echo ${FRONTEND_WEBSITE}
               if curl -s ${FRONTEND_WEBSITE} | grep "Welcome"
               then
-                return 1
+                exit 1
               else
-                return 1
+                exit 1
               fi
       # Here's where you will add some code to rollback on failure
       - destroy-environment
