@@ -349,7 +349,7 @@ jobs:
             - "2e:d9:1b:6a:4b:bf:c7:b0:13:26:b5:f3:aa:a9:81:3f"
       # attach workspace
      - attach_workspace:
-          at: ~/
+        at: ~/
     
     - install-nodejs
     - install-awscli
