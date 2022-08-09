@@ -64,7 +64,7 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow #id, store result in SUCCESS variable
             SUCCESS = $(curl --insecure "https://kvdb.io/Lg2M3qovDKBxrsUbCkpF1A/migration_<<parameters.workflow_id>>")
-            if(( $SUCCESS==1 ));
+            if(( $SUCCESS == 1 ));
             then
               cd ~/project/backend
               npm install
@@ -394,10 +394,10 @@ jobs:
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text)
               export API_URL=http://${BACKEND_PUBLIC_IP}:3030
-              echo ${BACKEND_PUBLIC_IP}
-              echo backend-${CIRCLE_WORKFLOW_ID:0:7}
+              # echo ${BACKEND_PUBLIC_IP}
+              # echo backend-${CIRCLE_WORKFLOW_ID:0:7}
               echo ${API_URL}
-              if curl -s $API_URL/api/status | grep "ok"
+              if curl -s ${API_URL}/api/status | grep "ok"
               then
                 return 0
               else
@@ -408,8 +408,8 @@ jobs:
           command: |
             # your code here
             FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
-              echo $FRONTEND_WEBSITE
-              if curl -s $FRONTEND_WEBSITE | grep "Welcome"
+              echo ${FRONTEND_WEBSITE}
+              if curl -s ${FRONTEND_WEBSITE} | grep "Welcome"
               then
                 return 1
               else
