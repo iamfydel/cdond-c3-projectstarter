@@ -383,7 +383,6 @@ jobs:
 
       - install-nodejs
       - install-awscli
-      - run: apk add --update curl
       - run:
           name: Frontend smoke test.
           command: |
