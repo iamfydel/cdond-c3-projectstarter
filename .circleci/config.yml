@@ -386,22 +386,21 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
+            export API_URL=http://${BACKEND_PUBLIC_IP}:3030
+            echo ${BACKEND_PUBLIC_IP}
+            echo backend-${CIRCLE_WORKFLOW_ID:0:7}
+            echo ${API_URL}
+            if curl -s $API_URL/api/status | grep "ok"
             then
-                exit 0
+              exit 0
             else
-                exit 1
+              exit 1
             fi
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
-      - revert-migrations
-
       - run:
           name: Frontend smoke test.
           command: |
@@ -414,6 +413,8 @@ jobs:
               exit 1
             fi
 
+      - destroy-environment
+      - revert-migrations
   cloudfront-update:
     docker:
       # Docker image here that supports AWS CLI
@@ -486,7 +487,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
+      - cloudfront-update:
+          requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
