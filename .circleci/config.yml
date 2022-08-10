@@ -18,7 +18,7 @@ commands:
       - run:
           name: Install Node.js 13
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
             sudo apt install -y nodejs
 
   install-ansible:
@@ -241,29 +241,21 @@ jobs:
       # Docker image here that supports Ansible
       - image: cimg/base:stable
     steps:
-      # Checkout code from git
       - checkout
-      # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints:
-            - "2e:d9:1b:6a:4b:bf:c7:b0:13:26:b5:f3:aa:a9:81:3f"
-      # attach workspace
+            - "a4:9d:96:eb:ac:e1:aa:05:fb:97:f2:1d:e8:2c:0e:9c"
       - attach_workspace:
           at: ~/
+
       - install-ansible
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # Your code here
-      #       exit 1
+      - install-awscli
       - run:
           name: Configure server
           command: |
-            # Your code here
             cd .circleci/ansible
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
-
-      # Here's where you will add some code to rollback on failure
       - destroy-environment
 
   run-migrations:
