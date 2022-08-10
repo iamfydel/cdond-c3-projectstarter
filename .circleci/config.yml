@@ -453,14 +453,15 @@ jobs:
           name: Fetch OldStack Workflow ID
           command: |
             export OldWorkflowID=$(curl --insecure https://kvdb.io/Lg2M3qovDKBxrsUbCkpF1A/old_workflow_id)
-            echo Old Workflow ID: $OldWorkflowID 
+            echo Old Workflow ID: udapeople-${OldWorkflowID} 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
+              echo "......................Delete Confirmed........................."
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             else
-              echo "......................Cannot CleanUp......................"
+              echo "......................Cannot CleanUp........................."
             fi
 
 workflows:
